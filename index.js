@@ -70,15 +70,3 @@ function getImages2() {
     };
   });
 }
-const combination = [...images, vid1];
-function getMedia() {
-  return images.map((img) => {
-    return function getImg() {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(img);
-        }, 2000);
-      });
-    };
-  });
-}
