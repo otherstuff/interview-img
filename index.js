@@ -56,10 +56,16 @@
   function getImagesSync() {
     return images;
   }
-  function getImages() {
+
+  const limits = Object.freeze({
     // timeouts probably need to be adjusted...
-    const maxCallsInThreeSeconds = 5;
-    const banThreshold = 2;
+    maxCallsInThreeSeconds: 5,
+    banThreshold: 2,
+    minResponseTime: 2000,
+    maxResponseTime: 2999,
+  });
+
+  function getImages() {
     let calls = 0;
     let triggerCount = 0;
     setInterval(() => {
@@ -67,14 +73,14 @@
     }, 3000);
     return images.map((img) => {
       return function getImg() {
-        if (triggerCount >= banThreshold) {
+        if (triggerCount >= limits.banThreshold) {
           return new Promise((_, reject) => {
             reject("banned from API");
           });
         }
-        if (calls > maxCallsInThreeSeconds + 1) {
+        if (calls > limits.maxCallsInThreeSeconds + 1) {
           triggerCount++;
-          const errMsg = `called too quickly! you can only make ${maxCallsInThreeSeconds} calls within three seconds`;
+          const errMsg = `called too quickly! you can only make ${limits.maxCallsInThreeSeconds} calls within three seconds`;
           alert(errMsg);
           return new Promise((_, reject) => reject(errMsg));
         }
@@ -82,7 +88,7 @@
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(img);
-          }, 2000 + Math.random() * 1000);
+          }, limits.minResponseTime + Math.random() * 1000);
         });
       };
     });
@@ -120,4 +126,5 @@
   window.getImages = getImages;
   window.getImagesFallible = getImagesFallible;
   window.debounce = debounce;
+  window.LIMITS = limits;
 })();
