@@ -53,14 +53,10 @@ function question() {
     img16,
     img17,
   ];
-  function getImages() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(images);
-      }, 3000);
-    });
+  function getImagesSync() {
+    return images;
   }
-  function getImages2() {
+  function getImages() {
     const maxCallsInThreeSeconds = 5;
     const banThreshold = 2;
     let calls = 0;
@@ -77,7 +73,7 @@ function question() {
         }
         if (calls > maxCallsInThreeSeconds + 1) {
           triggerCount++;
-          const errMsg = `called too quickly! you can only make ${maxCallsInThreeSeconds} within three seconds`;
+          const errMsg = `called too quickly! you can only make ${maxCallsInThreeSeconds} calls within three seconds`;
           alert(errMsg);
           return new Promise((_, reject) => reject(errMsg));
         }
@@ -85,11 +81,40 @@ function question() {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve(img);
-          }, 2000);
+          }, 2000 + Math.random() * 1000);
         });
       };
     });
   }
+
+  function didFail() {
+    return Math.random() > 0.75;
+  }
+  function getImagesFallible() {
+    return getImages().map((res) => {
+      if (didFail()) {
+        return new Promise((_, reject) =>
+          reject("random error. please try again")
+        );
+      }
+      return res;
+    });
+  }
+
+  function debounce(func, wait) {
+    let timeout;
+    return (...args) => {
+      const later = () => {
+        timeout = null;
+        func(args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  window.getImagesSync = getImagesSync;
   window.getImages = getImages;
-  window.getImages2 = getImages2;
+  window.getImagesFallible = getImagesFallible;
+  window.debounce = debounce;
 }
