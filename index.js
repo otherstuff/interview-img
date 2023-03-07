@@ -57,6 +57,7 @@ function question() {
     return images;
   }
   function getImages() {
+    // timeouts probably need to be adjusted...
     const maxCallsInThreeSeconds = 5;
     const banThreshold = 2;
     let calls = 0;
@@ -101,6 +102,8 @@ function question() {
     });
   }
 
+  // didnt really think about this implementation too much, but it should
+  // work well enough for the exercise...
   function debounce(func, wait) {
     let timeout;
     return (...args) => {
