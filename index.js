@@ -59,20 +59,22 @@
 
   const limits = Object.freeze({
     // timeouts probably need to be adjusted...
-    maxCallsInThreeSeconds: 5,
-    banThreshold: 2,
-    minResponseTime: 2000,
+    maxCallsInThirtySecs: 4,
+    banThreshold: 3,
+    minResponseTime: 1000,
     maxResponseTime: 2999,
   });
 
+  console.log('wat2');
   function getImages() {
     let calls = 0;
     let triggerCount = 0;
     setInterval(() => {
       calls = 0;
-    }, 3000);
+    }, 30000);
     return images.map((img) => {
       return function getImg() {
+        console.log(calls);
         if (triggerCount >= limits.banThreshold) {
           return new Promise((_, reject) => {
             reject("banned from API");
@@ -80,7 +82,7 @@
         }
         if (calls > limits.maxCallsInThreeSeconds + 1) {
           triggerCount++;
-          const errMsg = `called too quickly! you can only make ${limits.maxCallsInThreeSeconds} calls within three seconds`;
+          const errMsg = `called too quickly! you can only make ${limits.maxCallsInThirtySecs} calls within 30 seconds`;
           alert(errMsg);
           return new Promise((_, reject) => reject(errMsg));
         }
