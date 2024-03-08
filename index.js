@@ -80,7 +80,8 @@
             reject("banned from API");
           });
         }
-        if (calls > limits.maxCallsInThreeSeconds + 1) {
+        if (calls > limits.maxCallsInThirtySecs + 1) {
+          console.log('exceeded')
           triggerCount++;
           const errMsg = `called too quickly! you can only make ${limits.maxCallsInThirtySecs} calls within 30 seconds`;
           alert(errMsg);
